@@ -6,7 +6,31 @@
     <description>Recent content in Posts on Lingyin&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 06 Dec 2022 11:50:38 +0800</lastBuildDate><atom:link href="https://dmzlingyin.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 15 Dec 2022 20:02:58 +0800</lastBuildDate><atom:link href="https://dmzlingyin.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>设计模式-指导原则</title>
+      <link>https://dmzlingyin.github.io/posts/2/</link>
+      <pubDate>Thu, 15 Dec 2022 20:02:58 +0800</pubDate>
+      
+      <guid>https://dmzlingyin.github.io/posts/2/</guid>
+      <description>如果把设计模式原则看作为战略, 那么具体的设计模式(创建型模式、结构型模式、行为型模式)就是具体的战术。
+根据不同的设计原则，前人发明出了许许多多不同的设计模式，这些设计模式在实际的项目中不断打磨迭代，最终形成了一种固定的设计套路。在实际的项目开发中熟练运用这些套路， 对我们代码能力的提高是毋庸置疑的。 尤其是一些优秀的开源项目中使用了大量的设计模式， 不懂的话， 连看都看不懂。接下来的篇幅介绍了几种应用广泛的设计原则，必须要重点掌握。
+1. 单一职责原则(Single Responsibility Principle, SRP) 单一职责顾名思义就是只负责一件事。往大了说，handler层负责前端的请求处理，biz层负责具体的业务逻辑，dao层负责和数据库的交互，每一层干自己该干的事，这是单一职责。往小了说，在设计一个类的时候，要尽量保证类只会负责单一的工作。下面看一个例子：
+package main import &amp;#34;fmt&amp;#34; // 定义一个矩形类 type Rect struct { StartX int // 起始点x StartY int // 起始点y EndX int // 终点X EndY int // 终点Y } // Draw方法用于在屏幕上绘制矩形 func (r *Rect) Draw() { fmt.Printf(&amp;#34;起始点: x=%d y=%d, 终点: x=%d, y=%d, 矩形绘制完成\n&amp;#34;, r.StartX, r.StartY, r.EndX, r.EndY) } // Area计算矩形的面积 func (r *Rect) Area() { fmt.Printf(&amp;#34;矩形的面积为: %d\n&amp;#34;, (r.EndX-r.StartX)*(r.EndY-r.StartY)) } func main() { rect := &amp;amp;Rect{0, 0, 5, 3} rect.</description>
+    </item>
+    
+    <item>
+      <title>Go 泛型编程</title>
+      <link>https://dmzlingyin.github.io/posts/1/</link>
+      <pubDate>Sat, 10 Dec 2022 17:03:54 +0800</pubDate>
+      
+      <guid>https://dmzlingyin.github.io/posts/1/</guid>
+      <description>go1.18 新增了对泛型的支持, 现在来看一个具体的使用场景：
+假设有一个函数的功能是对输入的两个整数进行比较, 返回较大的那个。在go1.18之前的版本中, 可能写出如下的代码:
+func Max(a, b int) int { if a &amp;gt; b { return a } return b } fun Max(a, b int8) int8 { if a &amp;gt; b { return a } return b } fun Max(a, b int16) int16 { if a &amp;gt; b { return a } return b } ... ... 而引入泛型编程之后, 上述代码可以简化为如下形式:
+func Max[T int | int8 | int16 | int32 | int64] (a, b T) T { if a &amp;gt; b { return a } return b } 还可以将同一类型的数据封装到接口中:</description>
+    </item>
+    
     <item>
       <title>如何将Hugo托管到github</title>
       <link>https://dmzlingyin.github.io/posts/0/</link>
