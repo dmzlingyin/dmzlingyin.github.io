@@ -97,6 +97,158 @@
 <p><strong>总结一下</strong>：单一职责原则最大限度了保证了项目的<strong>高内聚、低耦合</strong>，但是现实中基本不太可能完全按照单一职责原则进行，如果这样的话，那代码就太分散琐碎了。所以单一职责原则只是一个理想情况，要尽量遵循。</p>
 <h2 id="2-开闭原则the-openclosed-principle-ocp">2. 开闭原则(The Open/Closed Principle, OCP)</h2>
 <p>维基百科对开闭原则的定义是：<strong>规定“软件中的对象（类，模块，函数等等）应该对于扩展是开放的，但是对于修改是封闭的”，这意味着一个实体是允许在不改变它的源代码的前提下变更它的行为。</strong></p>
+<p>翻译成人话就是：当我们想要增加一个类的功能时，不要更改类，而要通过扩展类的形式实现功能的添加。为什么呢？假设线上的一个模块已经运行了半年了，基本也没啥bug出现。但是现在我想新添加个功能， 如果不符合开闭原则，那我很可能会更改模块内部的代码，来实现新功能的添加。万一因为这个新添加的功能，导致原有的功能出现bug，那不是完蛋了。</p>
+<p>开闭原则的要求就是，原有的模块代码不能动。通过增加新代码的方式，实现功能的添加。这样，哪怕我新功能出现bug了，但并不会影响之前的功能。</p>
+<p>看一个实际的例子：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 绘制矩形和正方形的类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Drawer</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Drawer</span>) <span style="color:#a6e22e">Rect</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">h</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;起点x: %d, 起点y:%d, 长: %d, 宽: %d\n&#34;</span>, <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">y</span>, <span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">h</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Drawer</span>) <span style="color:#a6e22e">Square</span>(<span style="color:#a6e22e">length</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;起点x: %d, 起点y:%d, 边长: %d\n&#34;</span>, <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">y</span>, <span style="color:#a6e22e">length</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">d</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Drawer</span>{<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">Rect</span>(<span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">6</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">Square</span>(<span style="color:#ae81ff">6</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>上面的代码定义了一个Drawer类，该类有两个属性: x和y，代表绘制的起始点；两个方法: Rect和Square，用来绘制矩形和正方形。现在我需要新增加一个方法，用来绘制圆形，新添加后的代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 绘制矩形和正方形的类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Drawer</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Drawer</span>) <span style="color:#a6e22e">Rect</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">h</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;起点x: %d, 起点y:%d, 长: %d, 宽: %d\n&#34;</span>, <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">y</span>, <span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">h</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Drawer</span>) <span style="color:#a6e22e">Square</span>(<span style="color:#a6e22e">length</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;起点x: %d, 起点y:%d, 边长: %d\n&#34;</span>, <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">y</span>, <span style="color:#a6e22e">length</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">d</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Drawer</span>) <span style="color:#a6e22e">Circle</span>(<span style="color:#a6e22e">radius</span> <span style="color:#66d9ef">int</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;起点x: %d, 起点y:%d, 半径: %d\n&#34;</span>, <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">y</span>, <span style="color:#a6e22e">radius</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">d</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Drawer</span>{<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">Rect</span>(<span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">6</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">Square</span>(<span style="color:#ae81ff">6</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">Circle</span>(<span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>给Drawer类新添加了Circle方法，其实就已经违反了开闭原则，为什么呢？因为Circle方法改动了Drawer类代码。当然由于Golang特殊的语法特性，不是很容易看出来，如果换做是Python等语言，那就容易看出来了。还是同样的情况，由于代码简单可能看不出有什么问题。但是随着代码量的增加，再添加新类的时候很有可能改变了原有类的属性，导致所有依赖该属性的方法出现不可预估的bug。为此，我们引入开闭原则，将代码进行改造：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Drawer</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Draw</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">RectDrawer</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">w</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">h</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">rd</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">RectDrawer</span>) <span style="color:#a6e22e">Draw</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;起点x: %d, 起点y:%d, 长: %d, 宽: %d\n&#34;</span>, <span style="color:#a6e22e">rd</span>.<span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">rd</span>.<span style="color:#a6e22e">y</span>, <span style="color:#a6e22e">rd</span>.<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">rd</span>.<span style="color:#a6e22e">h</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">SquareDrawer</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">x</span>      <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">y</span>      <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">length</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">sd</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">SquareDrawer</span>) <span style="color:#a6e22e">Draw</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;起点x: %d, 起点y:%d, 边长: %d\n&#34;</span>, <span style="color:#a6e22e">sd</span>.<span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">sd</span>.<span style="color:#a6e22e">y</span>, <span style="color:#a6e22e">sd</span>.<span style="color:#a6e22e">length</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">DrawShape</span>(<span style="color:#a6e22e">d</span> <span style="color:#a6e22e">Drawer</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">Draw</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">rd</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">RectDrawer</span>{<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">6</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">DrawShape</span>(<span style="color:#a6e22e">rd</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sd</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">SquareDrawer</span>{<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">6</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">DrawShape</span>(<span style="color:#a6e22e">sd</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>上边的代码把Drawer抽象为一个接口，这样就提供了可扩展的能力。新添加的功能只要实现该接口，就可以被DrawShape调用，新添加的功能具体是怎么实现的并没有人关心。而且新添加的功能并没有影响到之前Rect和Square的代码，做到了高内聚低耦合。
+添加Cicle类，并被调用的代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Drawer</span> <span style="color:#66d9ef">interface</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">Draw</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">RectDrawer</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">y</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">w</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">h</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">rd</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">RectDrawer</span>) <span style="color:#a6e22e">Draw</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;起点x: %d, 起点y:%d, 长: %d, 宽: %d\n&#34;</span>, <span style="color:#a6e22e">rd</span>.<span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">rd</span>.<span style="color:#a6e22e">y</span>, <span style="color:#a6e22e">rd</span>.<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">rd</span>.<span style="color:#a6e22e">h</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">SquareDrawer</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">x</span>      <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">y</span>      <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">length</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">sd</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">SquareDrawer</span>) <span style="color:#a6e22e">Draw</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;起点x: %d, 起点y:%d, 边长: %d\n&#34;</span>, <span style="color:#a6e22e">sd</span>.<span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">sd</span>.<span style="color:#a6e22e">y</span>, <span style="color:#a6e22e">sd</span>.<span style="color:#a6e22e">length</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">CircleDrawer</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">x</span>      <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">y</span>      <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">radius</span> <span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">cd</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">CircleDrawer</span>) <span style="color:#a6e22e">Draw</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;起点x: %d, 起点y:%d, 半径: %d\n&#34;</span>, <span style="color:#a6e22e">cd</span>.<span style="color:#a6e22e">x</span>, <span style="color:#a6e22e">cd</span>.<span style="color:#a6e22e">y</span>, <span style="color:#a6e22e">cd</span>.<span style="color:#a6e22e">radius</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">DrawShape</span>(<span style="color:#a6e22e">d</span> <span style="color:#a6e22e">Drawer</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">Draw</span>()
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">rd</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">RectDrawer</span>{<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">6</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">DrawShape</span>(<span style="color:#a6e22e">rd</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">sd</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">SquareDrawer</span>{<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">6</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">DrawShape</span>(<span style="color:#a6e22e">sd</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">cd</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">CircleDrawer</span>{<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3</span>}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">DrawShape</span>(<span style="color:#a6e22e">cd</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>可以看到，只要新定义Circle类并实现Draw方法，就可以将绘制圆形的功能接入系统，不会影响到原有的系统功能。</p>
 
 </article>
 
